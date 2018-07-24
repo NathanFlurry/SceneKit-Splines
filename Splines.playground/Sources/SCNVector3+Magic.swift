@@ -25,10 +25,13 @@ protocol FloatConvertible {
     init(_ value: Float)
 }
 protocol FloatConvertibleMathable: FloatConvertible {
-    func +(lhs: Self, rhs: Self) -> Self
-    func -(lhs: Self, rhs: Self) -> Self
-    func *(lhs: Self, rhs: Self) -> Self
-    func /(lhs: Self, rhs: Self) -> Self
+    static func +(lhs: Self, rhs: Self) -> Self
+    static func -(lhs: Self, rhs: Self) -> Self
+    static func *(lhs: Self, rhs: Self) -> Self
+    static func /(lhs: Self, rhs: Self) -> Self
+    
+    static func +=(lhs: inout Self, rhs: Self)
+    static func -=(lhs: inout Self, rhs: Self)
 }
 extension Float: FloatConvertibleMathable { }
 extension Double: FloatConvertibleMathable { }
@@ -70,6 +73,18 @@ func *<T: FloatConvertibleMathable>(lhs: SCNVector3, rhs: T) -> SCNVector3 {
         VFloat(T(lhs.y) * rhs),
         VFloat(T(lhs.z) * rhs)
     )
+}
+
+func +=(lhs: inout SCNVector3, rhs: SCNVector3) {
+    lhs.x += rhs.x
+    lhs.y += rhs.y
+    lhs.z += rhs.z
+}
+
+func -=(lhs: inout SCNVector3, rhs: SCNVector3) {
+    lhs.x -= rhs.x
+    lhs.y -= rhs.y
+    lhs.z -= rhs.z
 }
 
 func /(lhs: SCNVector3, rhs: SCNVector3) -> SCNVector3 {

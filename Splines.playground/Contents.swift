@@ -11,7 +11,7 @@ let spline = Spline(
         // Generate random points
         var points = [SCNVector3]()
         let pointCount = 30
-        for i in 0..<pointCount {
+        for _ in 0..<pointCount {
             points += [
                 SCNVector3(
                     CGFloat(arc4random()) / CGFloat(UINT32_MAX) * sceneSize.x - sceneSize.x / 2,
@@ -26,6 +26,6 @@ let spline = Spline(
 )
 
 // Adds spheres along the spline; this is done in an external source file to make the process instant
-generateScene(scene, sceneSize: sceneSize, spline: spline, nodeCount: 1000)
+generateScene(scene: scene, sceneSize: sceneSize, spline: spline, nodeCount: 1000)
 
 scene

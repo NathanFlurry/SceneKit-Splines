@@ -35,7 +35,7 @@ public class Spline { // See http://paulbourke.net/miscellaneous/interpolation/
         self.method = method
     }
     
-    public func evalutate(time time: CGFloat) -> SCNVector3 { // Time between 0 and 1
+    public func evalutate(time: CGFloat) -> SCNVector3 { // Time between 0 and 1
         switch method {
         case .Linear:
             let (_, intTime, t) = getTimeProperties(time: time)
@@ -59,9 +59,20 @@ public class Spline { // See http://paulbourke.net/miscellaneous/interpolation/
                 a2 = p2 - p0
                 a3 = p1
             } else {
-                a0 = p0 * -0.5 + p1 * 1.5 - p2 * 1.5 + p3 * 0.5
-                a1 = p0        - p1 * 2.5 + p2 * 2   - p3 * 0.5
-                a2 = p0 * -0.5 + p2 * 0.5
+                a0 = p0 * -0.5
+                a0 += p1 * 1.5
+                a0 -= p2 * 1.5
+                a0 += p3 * 0.5
+                
+                
+                a1 = p0
+                a1 -= p1 * 2.5
+                a1 += p2 * 2
+                a1 -= p3 * 0.5
+                
+                a2 = p0 * -0.5
+                a2 += p2 * 0.5
+                
                 a3 = p1
             }
             
@@ -102,7 +113,7 @@ public class Spline { // See http://paulbourke.net/miscellaneous/interpolation/
         }
     }
     
-    public func evaluateRotation(time time: CGFloat, axis: SplineAxis, samplePrecision precision: CGFloat = 20) -> SCNVector3 {
+    public func evaluateRotation(time: CGFloat, axis: SplineAxis, samplePrecision precision: CGFloat = 20) -> SCNVector3 {
         // Find two positions on either side of the time to attempt to approximate the angle; this could be done better and more efficiently
         let range = 1 / CGFloat(points.count) / precision // The range at which to sample
         let vector = evalutate(time: time + range) - evalutate(time: time - range) // The approximate derivative of the point
@@ -134,7 +145,7 @@ public class Spline { // See http://paulbourke.net/miscellaneous/interpolation/
         }
     }
     
-    private func getTimeProperties(time time: CGFloat, paddedVertices pad: Int = 0) -> (CGFloat, Int, CGFloat) { // paddedVertices is the number of unused vertices on the ends
+    private func getTimeProperties(time: CGFloat, paddedVertices pad: Int = 0) -> (CGFloat, Int, CGFloat) { // paddedVertices is the number of unused vertices on the ends
         let absoluteTime = min(max(time, 0), 1) * CGFloat(points.count - 1 - pad * 2) // Time throughout the entire curve
         let intTime: Int = min(Int(absoluteTime), points.count - 2 - pad * 2) // Integer time for the starting index
         let t = absoluteTime - CGFloat(intTime) // The time to evaluate the curve at
